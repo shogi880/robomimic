@@ -2,4 +2,5 @@
 
 PROJECT_NAME=robomimic 
 
-docker build . -t tmats/$PROJECT_NAME
+docker build . -t shogi880/$PROJECT_NAME:mujoco210
+# docker build . -t shogi880/$PROJECT_NAME:mujoco210 --no-cache

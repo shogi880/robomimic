@@ -2,16 +2,18 @@
 # [1] https://github.com/robbyrussell/oh-my-zsh
 # [2] https://github.com/pyenv/pyenv/wiki/common-build-problems
 
+# git clone https://github.com/TMats/robomimic.git
+
 FROM nvidia/cudagl:11.1.1-devel-ubuntu20.04
 
 # Needed for string substitution
 SHELL ["/bin/bash", "-c"]
 # Pick up some TF dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        curl \
-        pkg-config \
-        unzip
+    build-essential \
+    curl \
+    pkg-config \
+    unzip
 
 # zsh (from [1]) ----------------
 RUN apt-get update && apt-get install -y \
@@ -46,7 +48,7 @@ RUN echo 'alias vnc="export DISPLAY=:0; Xvfb :0 -screen 0 1400x900x24 &; x11vnc 
 RUN source /root/.zshrc && \
     pip install setuptools jupyterlab && \
     pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html && \
-   pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.9.0+cu111.html && \
+    pip install torch-scatter torch-sparse torch-cluster torch-spline-conv torch-geometric -f https://data.pyg.org/whl/torch-1.9.0+cu111.html && \
     echo 'alias jl="jupyter lab --ip 0.0.0.0 --port 8888 --NotebookApp.token='' --allow-root &"' >> /root/.zshrc
 
 # utils ----------------
@@ -56,30 +58,30 @@ RUN apt-get update && apt-get install -y \
 # mujoco ----------------
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        libgl1-mesa-dev \
-        libgl1-mesa-glx \
-        libglew-dev \
-        libosmesa6-dev \
-        unzip
+    libgl1-mesa-dev \
+    libgl1-mesa-glx \
+    libglew-dev \
+    libosmesa6-dev \
+    unzip
 
 RUN curl -o /usr/local/bin/patchelf https://s3-us-west-2.amazonaws.com/openai-sci-artifacts/manual-builds/patchelf_0.9_amd64.elf && \
     chmod +x /usr/local/bin/patchelf
 
 RUN mkdir -p /root/.mujoco && \
-    wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip && \
-    unzip mujoco.zip -d /root/.mujoco && \
-    mv /root/.mujoco/mujoco200_linux /root/.mujoco/mujoco200 && \
-    #wget https://www.mujoco.org/download/mujoco210-linux-x86_64.tar.gz -O mujoco.tar.gz && \
-    #tar -xf mujoco.tar.gz -C /root/.mujoco && \
-    #rm mujoco.tar.gz
-    rm mujoco.zip
+    # wget https://www.roboti.us/download/mujoco200_linux.zip -O mujoco.zip && \
+    # unzip mujoco.zip -d /root/.mujoco && \
+    # mv /root/.mujoco/mujoco200_linux /root/.mujoco/mujoco200 && \
+    # rm mujoco.zip
+    wget https://www.mujoco.org/download/mujoco210-linux-x86_64.tar.gz -O mujoco.tar.gz && \
+    tar -xf mujoco.tar.gz -C /root/.mujoco && \
+    rm mujoco.tar.gz
 
 # COPY mjkey.txt /root/.mujoco/mjkey.txt
 RUN wget https://roboti.us/file/mjkey.txt && \
     mv mjkey.txt /root/.mujoco/mjkey.txt
 
-ENV LD_LIBRARY_PATH /root/.mujoco/mujoco200/bin:${LD_LIBRARY_PATH}
-# ENV LD_LIBRARY_PATH /root/.mujoco/mujoco210/bin:${LD_LIBRARY_PATH}
+# ENV LD_LIBRARY_PATH /root/.mujoco/mujoco200/bin:${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH /root/.mujoco/mujoco210/bin:${LD_LIBRARY_PATH}
 
 COPY requirements.txt /root/requirements.txt
 
@@ -93,8 +95,20 @@ RUN source /root/.zshrc && \
     pip install --upgrade pip && \
     pip install -r /root/requirements.txt
 
+RUN source /root/.zshrc && \
+    git clone https://github.com/shogi880/mujoco-py.git && \
+    cd mujoco-py && \
+    pip install -e .
+
+RUN source /root/.zshrc && \
+    git clone https://github.com/shogi880/robosuite.git && \
+    cd robosuite && \
+    git checkout offline_study && \
+    pip install -e . 
+
 ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
+ENV DISPLAY=:0
 
 # finalize image  ----------------
 RUN apt-get clean && \
@@ -104,3 +118,6 @@ RUN source ~/.zshrc
 
 WORKDIR /root
 CMD ["zsh"]
+
+# cd robomimic && pip install -r requirements.txt
+# cd tests && sh test.sh

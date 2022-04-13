@@ -2,8 +2,8 @@
 
 PROJECT_NAME=robomimic
 CONTAINER_NAME=$(whoami)_${PROJECT_NAME}
-IMAGE_NAME=tmats/${PROJECT_NAME}
-TAG_NAME=latest
+IMAGE_NAME=shogi880/${PROJECT_NAME}
+TAG_NAME=mujoco210
 
 # WANDB_KEY=`cat wandb_key.txt`
 

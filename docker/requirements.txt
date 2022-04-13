@@ -1,14 +1,9 @@
-imageio
 scikit-image
 matplotlib
 pandas
 pillow
 pytest
 pyyaml
-scipy
-#tensorflow==2.6.0
-#keras==2.6.0
-#tensorboardx
 trimesh==2.37.7
 h5py
 plyfile
@@ -17,6 +12,14 @@ immutabledict
 opencv-python==4.5.3.56
 gin-config @ git+https://github.com/google/gin-config@243ba87b3fcfeb2efb4a920b8f19679b61a6f0dc
 gym
-mujoco-py<2.1,>=2.0
+# mujoco-py
+glfw>=1.4.0
+Cython>=0.27.2
+imageio>=2.1.2
+cffi>=1.10
+fasteners~=0.15
+# robosuite
+numpy==1.20.0
+numba>=0.52.0
+scipy>=1.2.3
 cmake
-robosuite @ git+https://github.com/ARISE-Initiative/robosuite@d9baa17d5328d7b0ec15ecda54c76c61bb983124
